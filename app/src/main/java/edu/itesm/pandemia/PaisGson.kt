@@ -3,14 +3,14 @@ package edu.itesm.pandemia
 import com.google.gson.annotations.SerializedName
 
 data class PaisGson(
-    @SerializedName("country")
+    @SerializedName("continent")
     var nombre:String?,
-    var countryInfo: CountryInfo,
+    var continentInfo: ContinentInfo,
     var cases: Double?,
     var recovered: Double?
 )
 
-data class CountryInfo(
+data class ContinentInfo(
     var lat: Double?,
     var long: Double?
 )

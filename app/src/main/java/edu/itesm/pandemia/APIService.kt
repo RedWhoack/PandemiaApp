@@ -5,6 +5,6 @@ import retrofit2.http.GET
 import java.net.ResponseCache
 
 interface APIService {
-    @GET("countries")
+    @GET("continents")
     suspend fun getCountries(): Response<List<PaisGson>>
 }

@@ -47,7 +47,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
         cargaDatos()
-        //getCountries() //Agregado nueva clase
+        getContinents() //Agregado nueva clase
     }
 
     /**
@@ -61,31 +61,15 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
      */
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        /*
-        val requestQueue = Volley.newRequestQueue(this)
-        val peticion = JsonArrayRequest(Request.Method.GET,url,null,Response.Listener{
-            val jsonArray = it
-            for (i in 0 until jsonArray.length()){
-                val pais = jsonArray.getJSONObject(i)
-                val nombre = pais.getString("name")
-                val lat = pais.getDouble("lat")
-                val lng = pais.getDouble("lng")
-                val latLng = LatLng(lat,lng)
 
-                mMap.addMarker(MarkerOptions().position(latLng).title(nombre))
-            }
-        }, Response.ErrorListener {
+    }
 
-        })
-        requestQueue.add(peticion)
-
-        // Add a marker in Sydney and move the camera
-        /*val mexico = LatLng(19.432608, -99.133209)
-        mMap.addMarker(MarkerOptions().position(mexico).title("México City"))
-        mMap.addMarker(MarkerOptions().position(LatLng(18.432608, -99.133209)).title("Desconocido"))
-
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(mexico))*/
-        */
+    fun viewDataPaises(view: View){
+        mMap.clear()
+        for (pais in paisesGson){
+            mMap.addMarker(MarkerOptions().position(
+                    LatLng(pais?.continentInfo.lat?:0.0,pais?.continentInfo.long?:0.0)).title(pais?.nombre).icon(BitmapDescriptorFactory.fromResource(R.drawable.covid)))
+        }
     }
 
     fun viewData(view: View){
@@ -94,13 +78,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             mMap.addMarker(MarkerOptions().position(
                     LatLng(pais.latitude,pais.longitude)).title(pais.nombre).icon(BitmapDescriptorFactory.fromResource(R.drawable.covid)))
         }
-        /*
-        mMap.clear()
-        for (pais in paisesGson){
-            mMap.addMarker(MarkerOptions().position(
-                    LatLng(pais?.countryInfo.lat?:0.0,pais?.countryInfo.long?:0.0)).title(pais?.nombre).icon(BitmapDescriptorFactory.fromResource(R.drawable.covid)))
-        }
-        */
     }
 
     fun viewDefuns(view: View){
@@ -115,7 +92,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     fun viewReports(view: View){
         mMap.clear()
-        data.sortByDescending {
+        data.sortBy{
             it.casos
         }
         for (i in 0..9){
@@ -133,7 +110,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    private val data = mutableListOf<Pais>() //PaisGson
+    private val data = mutableListOf<Pais>()
+    private val pais = mutableListOf<PaisGson>()
 
     fun cargaDatos(){
         val requestQueue = Volley.newRequestQueue(this)
@@ -159,7 +137,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         })
         requestQueue.add(peticion)
     }
-    /*
+
     private fun getRetrofit():Retrofit{
         return Retrofit.Builder().baseUrl("https://disease.sh/v3/covid-19/")
                 .addConverterFactory(GsonConverterFactory.create())
@@ -167,7 +145,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private lateinit var paisesGson: ArrayList<PaisGson>
-    private fun getCountries(){
+    private fun getContinents(){
         val callToService = getRetrofit().create(APIService::class.java)
 
         CoroutineScope(Dispatchers.IO).launch{
@@ -182,6 +160,4 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
     }
-    */
-
 }
